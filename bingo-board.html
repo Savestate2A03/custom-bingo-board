@@ -1,0 +1,343 @@
+<html>
+<head>
+	<title>Bingo Generator (Custom)</title>
+	<style>
+		body {
+			background-color: #111;
+			margin: 0;
+			padding: 0;
+		}
+		#board {
+			width: 600px;
+			height: 520px;
+			margin: 20px;
+		}
+		#settings {
+			margin-left: 20px;
+		}
+		#board-table {
+			border-width: 1px;
+			border-collapse: collapse;
+			border-spacing: 0;
+			border-style: solid;
+			border-color: #fff;
+			padding: 0;
+			margin: 0;
+			color: #cee;
+			width: 100%;
+			height: 100%;
+			font-size: 11px;
+			font-family: monospace;
+		}
+		#board-table td {
+			border-width: 1px;
+			border-style: solid;
+			border-color: #777;
+			text-align: center;
+		}
+		.row0, .col0 {
+			background-color: #002;
+			color: #44f;
+			font-weight: bold;
+		}
+		.row0.color-hover, .col0.color-hover {
+			background-color: #22a;
+			color: #88f;
+			font-weight: bold;
+		}
+		.col0 {
+			width: 9%;
+		}
+		.col1, .col2, .col3, .col4, .col5 {
+			width: 18.2%;
+		}
+		.row0 {
+			height: 7%;
+		}
+		.row1, .row2, .row3, .row4, .row5 {
+			height: 17.2%;
+		}
+		.row6 {
+			height: 7%;
+		}
+		#adjust {
+			color: #aaa;
+			font-family: monospace;
+		}
+		.color-black {
+			background-color: #000;
+		}
+		.color-black.color-hover {
+			background-color: #113;
+		}
+		.color-green {
+			background-color: #141;
+		}
+		.color-green.color-hover {
+			background-color: #262;
+		}
+		.color-red {
+			background-color: #411;
+		}
+		.color-red.color-hover {
+			background-color: #622;
+		}
+		.changer {
+			min-width: 120px;
+			width: 120px;
+			background-color: #050505;
+			border-style: solid;
+			border-color: #444;
+			border-width: 1px;
+			color: #999;
+			margin-right: 8px;
+		}
+		.noselect {
+		-webkit-touch-callout: none; /* iOS Safari */
+		-webkit-user-select:   none; /* Safari */
+		 -khtml-user-select:   none; /* Konqueror HTML */
+		   -moz-user-select:   none; /* Firefox */
+		    -ms-user-select:   none; /* Internet Explorer/Edge */
+		        user-select:   none; /* Non-prefixed version, currently
+		                                supported by Chrome and Opera */
+		}
+		textarea.changer {
+			width: 300px;
+			height: 100px;
+		}
+	</style>
+	<script>
+		window.onload = function() {
+			document.getElementById('changer-seed').value = Math.floor(Math.random() * 2147483646);
+			document.getElementById('max-int').innerHTML = "2147483646";
+			for(var row=1; row<=5; row++){
+				for(var col=1; col<=5; col++){
+					var cell = document.getElementsByClassName("row"+row+" col"+col)[0];
+					cell.classList.add("color-black");
+					cell.onmouseover = function() {
+						this.classList.add("color-hover");
+					};
+					cell.onmouseout = function() {
+						this.classList.remove("color-hover");
+					};
+					cell.onclick = function() {
+						if (this.classList.contains('color-black')) {
+							this.classList.remove("color-black");
+							this.classList.add("color-green");
+						} else if (this.classList.contains('color-green')) {
+							this.classList.remove("color-green");
+							this.classList.add("color-red");
+						} else if (this.classList.contains('color-red')) {
+							this.classList.remove("color-red");
+							this.classList.add("color-black");
+						}
+					};
+				}
+			}
+			// ---- rows/cols ----
+			for (var i=1; i<6; i++) {
+				var col_h = document.getElementsByClassName("col0 row"+i)[0];
+				var row_h = document.getElementsByClassName("row0 col"+i)[0];
+				col_h.onmouseover = function() {
+					for(var j=0; j<this.classList.length; j++) {
+						if (this.classList[j].includes('row')) {
+							var row = this.classList[j];
+							var cols = document.getElementsByClassName(row);
+							for (var k=0; k<cols.length; k++) {
+								cols[k].classList.add("color-hover");
+							}
+						}
+					}
+				};
+				col_h.onmouseout = function() {
+					for(var j=0; j<this.classList.length; j++) {
+						if (this.classList[j].includes('row')) {
+							var row = this.classList[j];
+							var cols = document.getElementsByClassName(row);
+							for (var k=0; k<cols.length; k++) {
+								cols[k].classList.remove("color-hover");
+							}
+						}
+					}
+				};
+				row_h.onmouseover = function() {
+					for(var j=0; j<this.classList.length; j++) {
+						if (this.classList[j].includes('col')) {
+							var col = this.classList[j];
+							var rows = document.getElementsByClassName(col);
+							for (var k=0; k<rows.length; k++) {
+								rows[k].classList.add("color-hover");
+							}
+						}
+					}
+				};
+				row_h.onmouseout = function() {
+					for(var j=0; j<this.classList.length; j++) {
+						if (this.classList[j].includes('col')) {
+							var col = this.classList[j];
+							var rows = document.getElementsByClassName(col);
+							for (var k=0; k<rows.length; k++) {
+								rows[k].classList.remove("color-hover");
+							}
+						}
+					}
+				};
+			}
+			// ---- tlbr ----
+			var tlbr = document.getElementsByClassName("row0 col0")[0];
+			tlbr.onmouseover = function() {
+				for(var i=0; i<=6; i++) {
+					var cells = document.getElementsByClassName("row"+i+" col"+i);
+					if (cells.length <= 0) { return; }
+					cells[0].classList.add("color-hover");
+				}
+			};
+			tlbr.onmouseout = function() {
+				for(var i=0; i<=6; i++) {
+					var cells = document.getElementsByClassName("row"+i+" col"+i);
+					if (cells.length <= 0) { return; }
+					cells[0].classList.remove("color-hover");
+				}
+			};
+			// ---- bltr ----
+			var bltr = document.getElementsByClassName("row6 col0")[0];
+			bltr.onmouseover = function() {
+				for(var i=0; i<=6; i++) {
+					var cells = document.getElementsByClassName("row"+(6-i)+" col"+i);
+					if (cells.length <= 0) { return; }
+					cells[0].classList.add("color-hover");
+				}
+			};
+			bltr.onmouseout = function() {
+				for(var i=0; i<=6; i++) {
+					var cells = document.getElementsByClassName("row"+(6-i)+" col"+i);
+					if (cells.length <= 0) { return; }
+					cells[0].classList.remove("color-hover");
+				}
+			};
+		}
+		function adj_width(amt) {
+			document.getElementById('board').style.width = amt;
+		}
+		function adj_height(amt) {
+			document.getElementById('board').style.height = amt;
+		}
+		// https://gist.github.com/blixt/f17b47c62508be59987b
+		// --------------------------------------------------
+		function Random(seed) {
+			seed = Math.floor(seed);
+			this._seed = seed % 2147483647;
+			if (this._seed <= 0) this._seed += 2147483646;
+		}
+		Random.prototype.next = function () { // 2^31 - 2 (2147483646) upper limit 
+			return this._seed = this._seed * 16807 % 2147483647;
+		};
+		// --------------------------------------------------
+		function update_goals() {
+			var seed_val = parseInt(document.getElementById('changer-seed').value)
+			if (seed_val > 2147483646) {
+				window.alert("seed too big!");
+				return;
+			}
+			var lines = document.getElementById('goals').value.trim().split('\n');
+			var rng = new Random(seed_val);
+			for(var row=1; row<=5; row++){
+				for(var col=1; col<=5; col++){
+					var cell = document.getElementsByClassName("row"+row+" col"+col)[0];
+					var rule_index = rng.next() % lines.length;
+					var rule = lines[rule_index];
+					lines.splice(rule_index, 1);
+					cell.innerText = rule;
+				}
+			}
+		}
+		function save_local() {
+			window.localStorage.setItem('goal_list', document.getElementById('goals').value.trim());
+			window.localStorage.setItem('width', document.getElementById('board').style.width);
+			window.localStorage.setItem('height', document.getElementById('board').style.height);
+			window.localStorage.setItem('seed', document.getElementById('changer-seed').value);
+		}
+		function load_local() {
+			if (!window.localStorage.getItem('goal_list')) { return; }
+			document.getElementById('goals').value = window.localStorage.getItem('goal_list');
+			document.getElementById('board').style.width = window.localStorage.getItem('width');
+			document.getElementById('board').style.height = window.localStorage.getItem('height');
+			document.getElementById('changer-width').value = window.localStorage.getItem('width');
+			document.getElementById('changer-height').value = window.localStorage.getItem('height');
+			document.getElementById('changer-seed').value = window.localStorage.getItem('seed');
+			update_goals();
+		}
+	</script>
+</head>
+<body>
+	<div id="board" class="noselect">
+		<table id="board-table">
+			<tr>
+				<td class="tlbr row0 col0">TL-BR</td>
+				<td class="row0 col1">COL1</td> 
+				<td class="row0 col2">COL2</td>
+				<td class="row0 col3">COL3</td>
+				<td class="row0 col4">COL4</td> 
+				<td class="row0 col5">COL5</td>
+			</tr>
+			<tr>
+				<td class="row1 col0">ROW1</td>
+				<td class="row1 col1">1</td> 
+				<td class="row1 col2">2</td>
+				<td class="row1 col3">3</td>
+				<td class="row1 col4">4</td> 
+				<td class="row1 col5">5</td>
+			</tr>
+			<tr>
+				<td class="row2 col0">ROW2</td>
+				<td class="row2 col1">6</td> 
+				<td class="row2 col2">7</td>
+				<td class="row2 col3">8</td>
+				<td class="row2 col4">9</td> 
+				<td class="row2 col5">10</td>
+			</tr>
+			<tr>
+				<td class="row3 col0">ROW3</td>
+				<td class="row3 col1">11</td> 
+				<td class="row3 col2">12</td>
+				<td class="row3 col3">13</td>
+				<td class="row3 col4">14</td> 
+				<td class="row3 col5">15</td>
+			</tr>
+			<tr>
+				<td class="row4 col0">ROW4</td>
+				<td class="row4 col1">16</td> 
+				<td class="row4 col2">17</td>
+				<td class="row4 col3">18</td>
+				<td class="row4 col4">19</td> 
+				<td class="row4 col5">20</td>
+			</tr>
+			<tr>
+				<td class="row5 col0">ROW5</td>
+				<td class="row5 col1">21</td> 
+				<td class="row5 col2">22</td>
+				<td class="row5 col3">23</td>
+				<td class="row5 col4">24</td> 
+				<td class="row5 col5">25</td>
+			</tr>
+			<tr>
+				<td class="row6 col0">BL-TR</td>
+			</tr>
+		</table>
+	</div>
+	<div id="settings">
+		<div id="adjust">
+			<p><input class="changer" id="changer-width"  onchange="adj_width(document.getElementById('changer-width').value)" type="text" value="600px">adjust width</p>
+			<p><input class="changer" id="changer-height" onchange="adj_height(document.getElementById('changer-height').value)" type="text" value="520px">adjust height</p>
+			<p>
+				<input class="changer" id="changer-seed"  onchange="update_goals()" type="text">seed (max: 
+				<span id="max-int">calculating...</span>)
+			</p>
+			<p><textarea id="goals" onchange="update_goals()" class="changer">Paste newline separated bingo goals</textarea></p>
+			<p>
+				<input class="changer" id="changer-save" onclick="save_local()" type="submit" value="Save">
+				<input class="changer" id="changer-load" onclick="load_local()" type="submit" value="Load">
+			</p>
+		</div>
+	</div>
+</body>
