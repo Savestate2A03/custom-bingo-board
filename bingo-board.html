@@ -250,15 +250,6 @@
 		function adj_height(amt) {
 			document.getElementById('board').style.height = amt;
 		}
-		function adj_center(center) {
-			if (center) {
-				document.getElementById('board').style.marginLeft = "auto";
-				document.getElementById('board').style.marginRight = "auto";
-			} else {
-				document.getElementById('board').style.marginLeft = "20px";
-
-			}
-		}
 		// https://gist.github.com/blixt/f17b47c62508be59987b
 		// --------------------------------------------------
 		function Random(seed) {
@@ -382,9 +373,9 @@
 			window.localStorage.setItem('width', document.getElementById('board').style.width);
 			window.localStorage.setItem('height', document.getElementById('board').style.height);
 			window.localStorage.setItem('seed', document.getElementById('changer-seed').value);
-			window.localStorage.setItem('radio-rd', document.getElementById("changer-radio-rd").checked);
-			window.localStorage.setItem('radio-bo', document.getElementById("changer-radio-bo").checked);
-			window.localStorage.setItem('radio-rc', document.getElementById("changer-radio-rc").checked);
+			window.localStorage.setItem('radio-rd', document.getElementById("changer-radio-rd").checked?"y":"n"); // localStorage
+			window.localStorage.setItem('radio-bo', document.getElementById("changer-radio-bo").checked?"y":"n"); // is strings 
+			window.localStorage.setItem('radio-rc', document.getElementById("changer-radio-rc").checked?"y":"n"); // only ; ___ ;
 			var board_state = [];
 			for (var row=1; row<=5; row++) {
 				var rowArray = [];
@@ -404,9 +395,9 @@
 			document.getElementById('changer-width').value = window.localStorage.getItem('width');
 			document.getElementById('changer-height').value = window.localStorage.getItem('height');
 			document.getElementById('changer-seed').value = window.localStorage.getItem('seed');
-			document.getElementById('changer-radio-rd').checked = window.localStorage.getItem('radio-rd');
-			document.getElementById('changer-radio-bo').checked = window.localStorage.getItem('radio-bo');
-			document.getElementById('changer-radio-rc').checked = window.localStorage.getItem('radio-rc');
+			document.getElementById('changer-radio-rd').checked = window.localStorage.getItem('radio-rd') === "y"; // ugh
+			document.getElementById('changer-radio-bo').checked = window.localStorage.getItem('radio-bo') === "y";
+			document.getElementById('changer-radio-rc').checked = window.localStorage.getItem('radio-rc') === "y";
 			var board_state = JSON.parse(window.localStorage.getItem('board_state'));
 			for (var row=1; row<=5; row++) {
 				for (var col=1; col<=5; col++) {
