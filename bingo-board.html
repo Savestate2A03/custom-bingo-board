@@ -12,8 +12,9 @@
 			height: 520px;
 			margin: 20px;
 		}
-		#settings {
-			margin-left: 20px;
+		.settings {
+			display: flex;
+			justify-content: space-around;
 		}
 		#board-table {
 			border-width: 0px;
@@ -60,9 +61,13 @@
 		.row6 {
 			height: 7%;
 		}
-		#adjust {
+		.adjust {
 			color: #aaa;
 			font-family: monospace;
+		}
+		.footer {
+			margin-bottom: 12px;
+			margin-top: 12px;
 		}
 		.color-black {
 			background-color: #000;
@@ -97,9 +102,9 @@
 		-webkit-user-select:   none; /* Safari */
 		 -khtml-user-select:   none; /* Konqueror HTML */
 		   -moz-user-select:   none; /* Firefox */
-		    -ms-user-select:   none; /* Internet Explorer/Edge */
-		        user-select:   none; /* Non-prefixed version, currently
-		                                supported by Chrome and Opera */
+			-ms-user-select:   none; /* Internet Explorer/Edge */
+				user-select:   none; /* Non-prefixed version, currently
+										supported by Chrome and Opera */
 		}
 		textarea.changer {
 			width: 300px;
@@ -107,8 +112,10 @@
 		}
 	</style>
 	<script>
+		var MAX_SEED_SIZE = 2147483646;
+
 		window.onload = function() {
-			document.getElementById('changer-seed').value = Math.floor(Math.random() * 2147483646);
+			document.getElementById('changer-seed').value = Math.floor(Math.random() * MAX_SEED_SIZE);
 			document.getElementById('max-int').innerHTML = "2147483646";
 			for(var row=1; row<=5; row++){
 				for(var col=1; col<=5; col++){
@@ -227,36 +234,138 @@
 		function Random(seed) {
 			seed = Math.floor(seed);
 			this._seed = seed % 2147483647;
-			if (this._seed <= 0) this._seed += 2147483646;
+			if (this._seed <= 0) this._seed += MAX_SEED_SIZE;
 		}
 		Random.prototype.next = function () { // 2^31 - 2 (2147483646) upper limit 
-			return this._seed = this._seed * 16807 % 2147483647;
+			return this._seed = this._seed * 16807 % (MAX_SEED_SIZE + 1);
 		};
 		// --------------------------------------------------
-		function update_goals() {
-			var seed_val = parseInt(document.getElementById('changer-seed').value)
-			if (seed_val > 2147483646) {
-				window.alert("seed too big!");
-				return;
-			}
-			var lines = document.getElementById('goals').value.trim().split('\n');
-			var rng = new Random(seed_val);
-			for(var row=1; row<=5; row++){
-				for(var col=1; col<=5; col++){
-					var cell = document.getElementsByClassName("row"+row+" col"+col)[0];
-					var rule_index = rng.next() % lines.length;
-					var rule = lines[rule_index];
-					lines.splice(rule_index, 1);
-					cell.innerText = rule;
+
+		function random_seed() {
+			document.getElementById('changer-seed').value = Math.floor(Math.random() * MAX_SEED_SIZE);
+			update_goals();
+		}
+
+		function clear_board() {
+			for (var row=1; row<=5; row++) {
+				for (var col=1; col<=5; col++) {
+					document.getElementsByClassName("row"+row+" col"+col)[0].classList = "row"+row+" col"+col+" color-black";
 				}
 			}
 		}
+
+		function update_goals() {
+			var board = [];
+			var seed_val = parseInt(document.getElementById('changer-seed').value)
+			if (seed_val > MAX_SEED_SIZE) {
+				window.alert("seed too big!");
+				return;
+			}
+			// split lines into objects w a group array
+			var lines = document.getElementById('goals').value.trim().split('\n');
+			var goals = [];
+			for (var i=0; i<lines.length; i++) {
+				var line = lines[i];
+				var split = line.split('|');
+				var groups = [];
+				for (var j=0; j<split.length-1; j++) {
+					groups.push(split[j]);
+				}
+				var goal_object = {
+					goal: split[split.length-1],
+					groups: groups
+				};
+				goals.push(goal_object);
+			}
+
+			var radios = {
+				random: document.getElementById("changer-radio-rd").checked,
+				blackout: document.getElementById("changer-radio-bo").checked,
+				rowcol: document.getElementById("changer-radio-rc").checked
+			};
+
+			console.log(radios);
+
+			var rng = new Random(seed_val);
+			for (var row=1; row<=5; row++){
+				board.push([]);
+				for (var col=1; col<=5; col++){
+					// no conflict initially
+					var conflict;
+					var goal;
+					do {
+						conflict = false;
+						// get goal from the goals list 
+						var goal_index = rng.next() % goals.length;
+						goal = goals[goal_index];
+						// if blackout, no two goals may share a group
+						if (radios.blackout) {
+							for (var i=0; i<goal.groups.length; i++) {
+								// loop checking the groups of the potential goal
+								for (var j=0; j<board.length; j++) {
+									// loop checking board rows
+									for (var k=0; k<board[j].length; k++) {
+										// loop checking board columns 
+										if (board[j][k].groups.includes(goal.groups[i])) {
+											conflict = true; // conflict found !!
+											break;
+										}
+									}
+									if (conflict) break;
+								}
+								if (conflict) break;
+							}
+						} else if (radios.rowcol) {
+							for (var i=0; i<goal.groups.length; i++) {
+								// loop checking the groups of the potential goal
+								for (var j=1; j<row; j++) {
+									// current row
+									console.log(board[j-1]);
+									if (board[j-1][col-1].groups.includes(goal.groups[i])) {
+										conflict = true; // conflict found !!
+										break;
+									}
+								}
+								for (var j=1; j<col; j++) {
+									console.log(board[row-1]);
+									// current col
+									if (board[row-1][j-1].groups.includes(goal.groups[i])) {
+										conflict = true; // conflict found !!
+										break;
+									}
+								}
+								if (conflict) break;
+							}
+						} else {
+							// random						
+						}
+					} while (conflict);
+					// executes once a goal that matches the current filters is found
+					var cell = document.getElementsByClassName("row"+row+" col"+col)[0];
+					var goal_text = goals[goal_index].goal;
+					board[row-1].push(goal);
+					goals.splice(goal_index, 1);
+					cell.innerText = goal_text;
+				}
+			}
+		}
+
 		function save_local() {
 			window.localStorage.setItem('goal_list', document.getElementById('goals').value.trim());
 			window.localStorage.setItem('width', document.getElementById('board').style.width);
 			window.localStorage.setItem('height', document.getElementById('board').style.height);
 			window.localStorage.setItem('seed', document.getElementById('changer-seed').value);
+			var board_state = [];
+			for (var row=1; row<=5; row++) {
+				var rowArray = [];
+				for (var col=1; col<=5; col++) {
+					rowArray.push(document.getElementsByClassName("row"+row+" col"+col)[0].className);
+				}
+				board_state.push(rowArray);
+			}
+			window.localStorage.setItem('board_state', JSON.stringify(board_state));
 		}
+
 		function load_local() {
 			if (!window.localStorage.getItem('goal_list')) { return; }
 			document.getElementById('goals').value = window.localStorage.getItem('goal_list');
@@ -265,13 +374,19 @@
 			document.getElementById('changer-width').value = window.localStorage.getItem('width');
 			document.getElementById('changer-height').value = window.localStorage.getItem('height');
 			document.getElementById('changer-seed').value = window.localStorage.getItem('seed');
+			var board_state = JSON.parse(window.localStorage.getItem('board_state'));
+			for (var row=1; row<=5; row++) {
+				for (var col=1; col<=5; col++) {
+					document.getElementsByClassName("row"+row+" col"+col)[0].classList = board_state[row-1][col-1];
+				}
+			}
 			update_goals();
 		}
 	</script>
 </head>
 <body>
-	<div id="board" class="noselect">
-		<table id="board-table">
+	<div id="board">
+		<table id="board-table" class="noselect">
 			<tr>
 				<td class="tlbr row0 col0">TL-BR</td>
 				<td class="row0 col1">COL1</td> 
@@ -324,21 +439,37 @@
 				<td class="row6 col0">BL-TR</td>
 			</tr>
 		</table>
-	</div>
-	<div id="settings">
-		<div id="adjust">
-			<p><input class="changer" id="changer-width"  onchange="adj_width(document.getElementById('changer-width').value)" type="text" value="600px">adjust width</p>
-			<p><input class="changer" id="changer-height" onchange="adj_height(document.getElementById('changer-height').value)" type="text" value="520px">adjust height</p>
-			<p>
-				<input class="changer" id="changer-seed"  onchange="update_goals()" type="text">seed (max: 
-				<span id="max-int">calculating...</span>)
+		<div class="settings">
+			<div class="adjust">
+				<p><input class="changer" id="changer-width"  onchange="adj_width(document.getElementById('changer-width').value)" type="text" value="600px">adjust width</p>
+				<p><input class="changer" id="changer-height" onchange="adj_height(document.getElementById('changer-height').value)" type="text" value="520px">adjust height</p>
+				<p>
+					<input class="changer" id="changer-seed"  onchange="update_goals()" type="text">seed (max: 
+					<span id="max-int">calculating...</span>)
+				</p>
+				<p>
+					<input class="changer" id="changer-random" onclick="random_seed()" type="submit" value="Random Seed">
+					<input class="changer" id="changer-clearboard" onclick="clear_board()" type="submit" value="Clear Board">
+				</p>
+				<p>
+					<input class="changer" id="changer-save" onclick="save_local()" type="submit" value="Save">
+					<input class="changer" id="changer-load" onclick="load_local()" type="submit" value="Load">
+				</p>
+				<p>Paste newline separated bingo goals</p>
+				<p><textarea id="goals" onchange="update_goals()" class="changer"></textarea></p>
+			</div>
+			<div class="adjust">
+				<p>Goal Distribution Weight<br>
+				<em style="font-size: 10px">requires goal grouping to have an effect</em></p>
+				<p><input class="changer-radio" onclick="update_goals()" type="radio" id="changer-radio-rd" name="boardtype" value="Random" checked> Random</p>
+				<p><input class="changer-radio" onclick="update_goals()" type="radio" id="changer-radio-bo" name="boardtype" value="Blackout"> Blackout</p>
+				<p><input class="changer-radio" onclick="update_goals()" type="radio" id="changer-radio-rc" name="boardtype" value="Rows/Columns"> Rows/Columns</p>
+			</div>
+		</div>
+		<div class="adjust footer">
+			<p>Custom Bingo Board v1.0.2 by Savestate | Updated 6/14/2018 | 
+				<a style="color: #99e; text-decoration:none;" href="https://github.com/Savestate2A03/custom-bingo-board">GitHub</a>
 			</p>
-			<p><textarea id="goals" onchange="update_goals()" class="changer">Paste newline separated bingo goals</textarea></p>
-			<p>
-				<input class="changer" id="changer-save" onclick="save_local()" type="submit" value="Save">
-				<input class="changer" id="changer-load" onclick="load_local()" type="submit" value="Load">
-			</p>
-			<p>Custom Bingo Board v1.0.1 by Savestate | Updated 6/13/2018 | <a style="color: #bbb; text-decoration:none;" href="https://github.com/Savestate2A03/custom-bingo-board">GitHub</a></p>
 		</div>
 	</div>
 </body>
