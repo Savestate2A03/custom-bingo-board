@@ -7,6 +7,10 @@
 			margin: 0;
 			padding: 0;
 		}
+		a {
+			color: #99e; 
+			text-decoration:none;
+		}
 		#board {
 			width: 600px;
 			height: 520px;
@@ -102,9 +106,9 @@
 		-webkit-user-select:   none; /* Safari */
 		 -khtml-user-select:   none; /* Konqueror HTML */
 		   -moz-user-select:   none; /* Firefox */
-			-ms-user-select:   none; /* Internet Explorer/Edge */
-				user-select:   none; /* Non-prefixed version, currently
-										supported by Chrome and Opera */
+		    -ms-user-select:   none; /* Internet Explorer/Edge */
+		         ser-select:   none; /* Non-prefixed version, currently
+		                                supported by Chrome and Opera */
 		}
 		textarea.changer {
 			width: 300px;
@@ -243,6 +247,7 @@
 
 		function random_seed() {
 			document.getElementById('changer-seed').value = Math.floor(Math.random() * MAX_SEED_SIZE);
+			clear_board();
 			update_goals();
 		}
 
@@ -355,6 +360,9 @@
 			window.localStorage.setItem('width', document.getElementById('board').style.width);
 			window.localStorage.setItem('height', document.getElementById('board').style.height);
 			window.localStorage.setItem('seed', document.getElementById('changer-seed').value);
+			window.localStorage.setItem('radio-rd', document.getElementById("changer-radio-rd").checked);
+			window.localStorage.setItem('radio-bo', document.getElementById("changer-radio-bo").checked);
+			window.localStorage.setItem('radio-rc', document.getElementById("changer-radio-rc").checked);
 			var board_state = [];
 			for (var row=1; row<=5; row++) {
 				var rowArray = [];
@@ -374,6 +382,9 @@
 			document.getElementById('changer-width').value = window.localStorage.getItem('width');
 			document.getElementById('changer-height').value = window.localStorage.getItem('height');
 			document.getElementById('changer-seed').value = window.localStorage.getItem('seed');
+			document.getElementById('changer-radio-rd').checked = window.localStorage.getItem('radio-rd');
+			document.getElementById('changer-radio-bo').checked = window.localStorage.getItem('radio-bo');
+			document.getElementById('changer-radio-rc').checked = window.localStorage.getItem('radio-rc');
 			var board_state = JSON.parse(window.localStorage.getItem('board_state'));
 			for (var row=1; row<=5; row++) {
 				for (var col=1; col<=5; col++) {
@@ -397,43 +408,43 @@
 			</tr>
 			<tr>
 				<td class="row1 col0">ROW1</td>
-				<td class="row1 col1">1</td> 
-				<td class="row1 col2">2</td>
-				<td class="row1 col3">3</td>
-				<td class="row1 col4">4</td> 
-				<td class="row1 col5">5</td>
+				<td class="row1 col1"></td> 
+				<td class="row1 col2"></td>
+				<td class="row1 col3"></td>
+				<td class="row1 col4"></td> 
+				<td class="row1 col5"></td>
 			</tr>
 			<tr>
 				<td class="row2 col0">ROW2</td>
-				<td class="row2 col1">6</td> 
-				<td class="row2 col2">7</td>
-				<td class="row2 col3">8</td>
-				<td class="row2 col4">9</td> 
-				<td class="row2 col5">10</td>
+				<td class="row2 col1"></td> 
+				<td class="row2 col2"></td>
+				<td class="row2 col3"></td>
+				<td class="row2 col4"></td> 
+				<td class="row2 col5"></td>
 			</tr>
 			<tr>
 				<td class="row3 col0">ROW3</td>
-				<td class="row3 col1">11</td> 
-				<td class="row3 col2">12</td>
-				<td class="row3 col3">13</td>
-				<td class="row3 col4">14</td> 
-				<td class="row3 col5">15</td>
+				<td class="row3 col1"></td> 
+				<td class="row3 col2"></td>
+				<td class="row3 col3"></td>
+				<td class="row3 col4"></td> 
+				<td class="row3 col5"></td>
 			</tr>
 			<tr>
 				<td class="row4 col0">ROW4</td>
-				<td class="row4 col1">16</td> 
-				<td class="row4 col2">17</td>
-				<td class="row4 col3">18</td>
-				<td class="row4 col4">19</td> 
-				<td class="row4 col5">20</td>
+				<td class="row4 col1"></td> 
+				<td class="row4 col2"></td>
+				<td class="row4 col3"></td>
+				<td class="row4 col4"></td> 
+				<td class="row4 col5"></td>
 			</tr>
 			<tr>
 				<td class="row5 col0">ROW5</td>
-				<td class="row5 col1">21</td> 
-				<td class="row5 col2">22</td>
-				<td class="row5 col3">23</td>
-				<td class="row5 col4">24</td> 
-				<td class="row5 col5">25</td>
+				<td class="row5 col1"></td> 
+				<td class="row5 col2"></td>
+				<td class="row5 col3"></td>
+				<td class="row5 col4"></td> 
+				<td class="row5 col5"></td>
 			</tr>
 			<tr>
 				<td class="row6 col0">BL-TR</td>
@@ -467,9 +478,8 @@
 			</div>
 		</div>
 		<div class="adjust footer">
-			<p>Custom Bingo Board v1.0.2 by Savestate | Updated 6/14/2018 | 
-				<a style="color: #99e; text-decoration:none;" href="https://github.com/Savestate2A03/custom-bingo-board">GitHub</a>
-			</p>
+			<p>Custom Bingo Board v1.0.2 by <a href="https://twitter.com/Savestate">Savestate</a></p>
+			<p>Updated 6/14/2018 | <a href="https://github.com/Savestate2A03/custom-bingo-board">GitHub</a></p>
 		</div>
 	</div>
 </body>
