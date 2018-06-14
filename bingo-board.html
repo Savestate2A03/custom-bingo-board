@@ -11,6 +11,14 @@
 			color: #99e; 
 			text-decoration:none;
 		}
+		hr {
+			height: 1px;
+			border-style: none;
+			background-color: #aaa;
+			margin: 0;
+			padding: 0;
+			width: 100%;
+		}
 		#board {
 			width: 600px;
 			height: 520px;
@@ -101,6 +109,16 @@
 			color: #999;
 			margin-right: 8px;
 		}
+		.changer-half {
+			min-width: 60px;
+			width: 60px;
+			background-color: #050505;
+			border-style: solid;
+			border-color: #444;
+			border-width: 1px;
+			color: #999;
+			margin-right: 8px;
+		}
 		.noselect {
 		-webkit-touch-callout: none; /* iOS Safari */
 		-webkit-user-select:   none; /* Safari */
@@ -120,7 +138,6 @@
 
 		window.onload = function() {
 			document.getElementById('changer-seed').value = Math.floor(Math.random() * MAX_SEED_SIZE);
-			document.getElementById('max-int').innerHTML = "2147483646";
 			for(var row=1; row<=5; row++){
 				for(var col=1; col<=5; col++){
 					var cell = document.getElementsByClassName("row"+row+" col"+col)[0];
@@ -233,6 +250,15 @@
 		function adj_height(amt) {
 			document.getElementById('board').style.height = amt;
 		}
+		function adj_center(center) {
+			if (center) {
+				document.getElementById('board').style.marginLeft = "auto";
+				document.getElementById('board').style.marginRight = "auto";
+			} else {
+				document.getElementById('board').style.marginLeft = "20px";
+
+			}
+		}
 		// https://gist.github.com/blixt/f17b47c62508be59987b
 		// --------------------------------------------------
 		function Random(seed) {
@@ -263,7 +289,7 @@
 			var board = [];
 			var seed_val = parseInt(document.getElementById('changer-seed').value)
 			if (seed_val > MAX_SEED_SIZE) {
-				window.alert("seed too big!");
+				window.alert("Seed is bigger than "+MAX_SEED_SIZE+"!");
 				return;
 			}
 			// split lines into objects w a group array
@@ -288,8 +314,6 @@
 				blackout: document.getElementById("changer-radio-bo").checked,
 				rowcol: document.getElementById("changer-radio-rc").checked
 			};
-
-			console.log(radios);
 
 			var rng = new Random(seed_val);
 			for (var row=1; row<=5; row++){
@@ -325,14 +349,12 @@
 								// loop checking the groups of the potential goal
 								for (var j=1; j<row; j++) {
 									// current row
-									console.log(board[j-1]);
 									if (board[j-1][col-1].groups.includes(goal.groups[i])) {
 										conflict = true; // conflict found !!
 										break;
 									}
 								}
 								for (var j=1; j<col; j++) {
-									console.log(board[row-1]);
 									// current col
 									if (board[row-1][j-1].groups.includes(goal.groups[i])) {
 										conflict = true; // conflict found !!
@@ -450,21 +472,19 @@
 				<td class="row6 col0">BL-TR</td>
 			</tr>
 		</table>
+		<form autocomplete="off">
 		<div class="settings">
 			<div class="adjust">
-				<p><input class="changer" id="changer-width"  onchange="adj_width(document.getElementById('changer-width').value)" type="text" value="600px">adjust width</p>
-				<p><input class="changer" id="changer-height" onchange="adj_height(document.getElementById('changer-height').value)" type="text" value="520px">adjust height</p>
 				<p>
-					<input class="changer" id="changer-seed"  onchange="update_goals()" type="text">seed (max: 
-					<span id="max-int">calculating...</span>)
+					<input class="changer" id="changer-seed"  onchange="update_goals()" type="text">seed
 				</p>
 				<p>
-					<input class="changer" id="changer-random" onclick="random_seed()" type="submit" value="Random Seed">
-					<input class="changer" id="changer-clearboard" onclick="clear_board()" type="submit" value="Clear Board">
+					<input class="changer" id="changer-random" onclick="random_seed()" type="button" value="Random Seed">
+					<input class="changer" id="changer-clearboard" onclick="clear_board()" type="button" value="Clear Board">
 				</p>
 				<p>
-					<input class="changer" id="changer-save" onclick="save_local()" type="submit" value="Save">
-					<input class="changer" id="changer-load" onclick="load_local()" type="submit" value="Load">
+					<input class="changer" id="changer-save" onclick="save_local()" type="button" value="Save">
+					<input class="changer" id="changer-load" onclick="load_local()" type="button" value="Load">
 				</p>
 				<p>Paste newline separated bingo goals</p>
 				<p><textarea id="goals" onchange="update_goals()" class="changer"></textarea></p>
@@ -475,11 +495,15 @@
 				<p><input class="changer-radio" onclick="update_goals()" type="radio" id="changer-radio-rd" name="boardtype" value="Random" checked> Random</p>
 				<p><input class="changer-radio" onclick="update_goals()" type="radio" id="changer-radio-bo" name="boardtype" value="Blackout"> Blackout</p>
 				<p><input class="changer-radio" onclick="update_goals()" type="radio" id="changer-radio-rc" name="boardtype" value="Rows/Columns"> Rows/Columns</p>
+				<hr>
+				<p><input class="changer-half" id="changer-width"  onchange="adj_width(document.getElementById('changer-width').value)" type="text" value="600px">Width</p>
+				<p><input class="changer-half" id="changer-height" onchange="adj_height(document.getElementById('changer-height').value)" type="text" value="520px">Height</p>
 			</div>
 		</div>
 		<div class="adjust footer">
-			<p>Custom Bingo Board v1.0.3 by <a href="https://twitter.com/Savestate">Savestate</a></p>
+			<p>Custom Bingo Board v1.0.4 by <a href="https://twitter.com/Savestate">Savestate</a></p>
 			<p>Updated 6/14/2018 | <a href="https://github.com/Savestate2A03/custom-bingo-board">GitHub</a></p>
 		</div>
 	</div>
+	</form>
 </body>
