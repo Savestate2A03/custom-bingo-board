@@ -19,6 +19,11 @@
 			padding: 0;
 			width: 100%;
 		}
+		ul, li, h2 {
+			margin: 8px;
+			padding: 0;
+		}
+
 		#board {
 			width: 600px;
 			height: 520px;
@@ -129,7 +134,7 @@
 		                                supported by Chrome and Opera */
 		}
 		textarea.changer {
-			width: 300px;
+			width: 256px;
 			height: 100px;
 		}
 	</style>
@@ -327,7 +332,7 @@
 									for (var k=0; k<board[j].length; k++) {
 										// loop checking board columns 
 										if (board[j][k].groups.includes(goal.groups[i])) {
-											conflict = true; // conflict found !!
+											conflict = goal.groups[i]; // conflict found !!
 											break;
 										}
 									}
@@ -335,24 +340,39 @@
 								}
 								if (conflict) break;
 							}
+						// rows / cols / tlbr / bltr
 						} else if (radios.rowcol) {
 							for (var i=0; i<goal.groups.length; i++) {
 								// loop checking the groups of the potential goal
-								for (var j=1; j<row; j++) {
+								for (var j=1; j<row && !conflict; j++) {
 									// current row
-									if (board[j-1][col-1].groups.includes(goal.groups[i])) {
-										conflict = true; // conflict found !!
-										break;
+									var square = board[j-1][col-1];
+									if (square.groups.includes(goal.groups[i])) {
+										conflict = square; // conflict found !!
 									}
 								}
-								for (var j=1; j<col; j++) {
+								for (var j=1; j<col && !conflict; j++) {
 									// current col
+									var square = board[row-1][j-1];
 									if (board[row-1][j-1].groups.includes(goal.groups[i])) {
-										conflict = true; // conflict found !!
-										break;
+										conflict = board[row-1][j-1]; // conflict found !!
 									}
 								}
-								if (conflict) break;
+								for (var j=1; j<row && row==col && !conflict; j++) {
+									// tlbr
+									var square = board[j-1][j-1];
+									if (square.groups.includes(goal.groups[i])) {
+										conflict = square;
+									}
+								}
+								for (var j=1; j<row && 6-row==col && !conflict; j++) {
+									// bltr
+									var square = board[j-1][j-1];
+									if (square.groups.includes(goal.groups[i])) {
+										conflict = square;
+									}
+								}
+								if (conflict) { break; }
 							}
 						} else {
 							// random						
@@ -492,8 +512,8 @@
 			</div>
 		</div>
 		<div class="adjust footer">
-			<p>Custom Bingo Board v1.0.4 by <a href="https://twitter.com/Savestate">Savestate</a></p>
-			<p>Updated 6/14/2018 | <a href="https://github.com/Savestate2A03/custom-bingo-board">GitHub</a></p>
+			<p>Custom Bingo Board v1.0.5 by <a href="https://twitter.com/Savestate">Savestate</a></p>
+			<p>Updated 6/15/2018 | <a href="https://github.com/Savestate2A03/custom-bingo-board">GitHub</a></p>
 		</div>
 	</div>
 	</form>
