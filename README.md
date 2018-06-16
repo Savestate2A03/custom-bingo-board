@@ -6,6 +6,8 @@ Goals in a goal list fed to CBB can be put into groups. Goals that share the sam
 
 The option to randomize all goals regardless of grouping is also available. 
 
+Big thanks to Numberplay and dotzo for the advice during the development of CBB.
+
 ### Example
 *Exerpt from TLoZ: OoT Randomizer Goal List*
 ```
