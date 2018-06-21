@@ -249,6 +249,15 @@
 				}
 			};
 		}
+		function adj_font(amt) {
+			document.getElementById('board-table').style.fontFamily = amt;
+		}
+		function adj_fontsize(amt) {
+			document.getElementById('board-table').style.fontSize = amt;
+		}
+		function adj_bold(amt) {
+			document.getElementById('board-table').style.fontWeight = amt ? "bold" : "normal";
+		}
 		function adj_width(amt) {
 			document.getElementById('board').style.width = amt;
 		}
@@ -393,9 +402,12 @@
 			window.localStorage.setItem('width', document.getElementById('board').style.width);
 			window.localStorage.setItem('height', document.getElementById('board').style.height);
 			window.localStorage.setItem('seed', document.getElementById('changer-seed').value);
-			window.localStorage.setItem('radio-rd', document.getElementById("changer-radio-rd").checked?"y":"n"); // localStorage
-			window.localStorage.setItem('radio-bo', document.getElementById("changer-radio-bo").checked?"y":"n"); // is strings 
-			window.localStorage.setItem('radio-rc', document.getElementById("changer-radio-rc").checked?"y":"n"); // only ; ___ ;
+			window.localStorage.setItem('radio-rd', document.getElementById("changer-radio-rd").checked?"t":"f"); // localStorage
+			window.localStorage.setItem('radio-bo', document.getElementById("changer-radio-bo").checked?"t":"f"); // is strings 
+			window.localStorage.setItem('radio-rc', document.getElementById("changer-radio-rc").checked?"t":"f"); // only ; ___ ;
+			window.localStorage.setItem('font-family', document.getElementById('board-table').style.fontFamily);
+			window.localStorage.setItem('font-size', document.getElementById('board-table').style.fontSize);
+			window.localStorage.setItem('font-weight', (document.getElementById('board-table').style.fontWeight === "bold")?"t":"f");
 			var board_state = [];
 			for (var row=1; row<=5; row++) {
 				var rowArray = [];
@@ -415,9 +427,15 @@
 			document.getElementById('changer-width').value = window.localStorage.getItem('width');
 			document.getElementById('changer-height').value = window.localStorage.getItem('height');
 			document.getElementById('changer-seed').value = window.localStorage.getItem('seed');
-			document.getElementById('changer-radio-rd').checked = window.localStorage.getItem('radio-rd') === "y"; // ugh
-			document.getElementById('changer-radio-bo').checked = window.localStorage.getItem('radio-bo') === "y";
-			document.getElementById('changer-radio-rc').checked = window.localStorage.getItem('radio-rc') === "y";
+			document.getElementById('changer-radio-rd').checked = window.localStorage.getItem('radio-rd') === "t"; // ugh
+			document.getElementById('changer-radio-bo').checked = window.localStorage.getItem('radio-bo') === "t";
+			document.getElementById('changer-radio-rc').checked = window.localStorage.getItem('radio-rc') === "t";
+			document.getElementById('changer-fonts').value = window.localStorage.getItem('font-family');
+			document.getElementById('board-table').style.fontFamily = window.localStorage.getItem('font-family');
+			document.getElementById('changer-fontsize').value = window.localStorage.getItem('font-size');
+			document.getElementById('board-table').style.fontSize = window.localStorage.getItem('font-size');
+			document.getElementById('changer-bold').checked = window.localStorage.getItem('font-weight') === "t";
+			document.getElementById('board-table').style.fontWeight = (window.localStorage.getItem('font-weight') === "t")?"bold":"normal";
 			var board_state = JSON.parse(window.localStorage.getItem('board_state'));
 			for (var row=1; row<=5; row++) {
 				for (var col=1; col<=5; col++) {
@@ -509,11 +527,23 @@
 				<hr>
 				<p><input class="changer-half" id="changer-width"  onchange="adj_width(document.getElementById('changer-width').value)" type="text" value="600px">Width</p>
 				<p><input class="changer-half" id="changer-height" onchange="adj_height(document.getElementById('changer-height').value)" type="text" value="520px">Height</p>
+				<p>
+					<select class="changer" id="changer-fonts" onchange="adj_font(document.getElementById('changer-fonts').value)">
+						<option value="Arial">Arial</option>
+						<option value="Times New Roman">Times New Roman</option>
+						<option value="Courier New" selected>Courier New</option>
+						<option value="Verdana">Verdana</option>
+						<option value="Georgia">Georgia</option>
+						<option value="Impact">Impact</option>
+					</select>
+					<input class="changer-half" id="changer-fontsize" onchange="adj_fontsize(document.getElementById('changer-fontsize').value)" type="text" value="11px">
+				</p>
+				<p><input type="checkbox" class="changer-radio" id="changer-bold" onchange="adj_bold(document.getElementById('changer-bold').checked)"> Bold?</p>
 			</div>
 		</div>
 		<div class="adjust footer">
-			<p>Custom Bingo Board v1.0.5 by <a href="https://twitter.com/Savestate">Savestate</a></p>
-			<p>Updated 6/15/2018 | <a href="https://github.com/Savestate2A03/custom-bingo-board">GitHub</a></p>
+			<p>Custom Bingo Board v1.0.6 by <a href="https://twitter.com/Savestate">Savestate</a></p>
+			<p>Updated 6/21/2018 | <a href="https://github.com/Savestate2A03/custom-bingo-board">GitHub</a></p>
 		</div>
 	</div>
 	</form>
