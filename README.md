@@ -37,6 +37,7 @@ Note: Groups are only pipe `|` delimited. Groups may have spaces and other speci
  * `v1.0.3` distribution selectors saved when saving and random seed clears board
  * `v1.0.4` update button and text input positions / fix localStorage boolean bug
  * `v1.0.5` check tlbr/bltr in row/column mode
+ * `v1.0.6` font customization options
 
 ## Online Version
 http://bingo.sav.estate/
