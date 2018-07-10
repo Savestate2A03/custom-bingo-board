@@ -27,7 +27,7 @@ DEKUTREE|Defeat Queen Gohma
 ```
 Note: Groups are only pipe `|` delimited. Groups may have spaces and other special characters. 
 ## Common Goal Lists
-* [TLoZ: OoT Randomizer (glitchless)](https://pastebin.com/raw/SY1uyAVA) v7, newest always available in the [Discord server](https://discord.gg/sWCMPfH)
+* [TLoZ: OoT Randomizer (glitchless)](https://pastebin.com/raw/CMAWSK2E) v8, newest always available in the [Discord server](https://discord.gg/sWCMPfH)
 * ... more to come ?
 
 ## Changelog
@@ -38,6 +38,7 @@ Note: Groups are only pipe `|` delimited. Groups may have spaces and other speci
  * `v1.0.4` update button and text input positions / fix localStorage boolean bug
  * `v1.0.5` check tlbr/bltr in row/column mode
  * `v1.0.6` font customization options
+ * `v1.0.7` make rows/col the default selection
 
 ## Online Version
 http://bingo.sav.estate/
