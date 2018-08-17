@@ -5,6 +5,8 @@ var OOTRANDO_BOARDTYPE_RANDOM   = 2;
 // any bigger than this breaks the randomization
 var OOTRANDO_MAX_SEED_SIZE = 2147483646;
 
+// list based on v9, https://pastebin.com/raw/RGVA7RwU
+
 var bingoList = [
 	"VISITALLADULT|1 Skulltula from each Adult Dungeon",
 	"VISITALLCHILD|1 Skulltula from each Child Dungeon",
