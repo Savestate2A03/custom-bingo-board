@@ -27,7 +27,7 @@ DEKUTREE|Defeat Queen Gohma
 ```
 Note: Groups are only pipe `|` delimited. Groups may have spaces and other special characters. 
 ## Common Goal Lists
-* [TLoZ: OoT Randomizer (glitchless)](https://pastebin.com/raw/CMAWSK2E) v8, newest always available in the [Discord server](https://discord.gg/sWCMPfH)
+* [TLoZ: OoT Randomizer (glitchless)](https://pastebin.com/raw/RGVA7RwU) v9, newest always available in the [Discord server](https://discord.gg/sWCMPfH)
 * ... more to come ?
 
 ## Changelog
